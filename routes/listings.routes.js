@@ -10,7 +10,7 @@ router.post("/listings", verifyToken, async (req, res, next) => {
 
   try {
     const createdListing = await Listing.create({
-      ...req.body,
+      ...req.body, // spread operator: copies all properties from req.body (e.g. title, description, price)
       owner: req.payload._id
     })
     res.status(201).json(createdListing)
