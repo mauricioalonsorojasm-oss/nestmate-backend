@@ -8,9 +8,10 @@ function config(app) {
   app.use(express.static("public"));
 
   // to allow CORS access from anywhere
-  app.use(cors({
-    origin: [process.env.ORIGIN]
-  }));
+app.use(cors({
+  origin: process.env.ORIGIN || "http://localhost:5173",
+  credentials: true
+}));
 
   // below two configurations will help express routes at correctly receiving data. 
   app.use(express.json()); // recognize an incoming Request Object as a JSON Object

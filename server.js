@@ -1,36 +1,35 @@
-process.loadEnvFile()
+process.loadEnvFile();
 
 const express = require("express");
 const app = express();
 
-// initialize DB connection
-require("./db")
+// DB
+require("./db");
 
-// all middlewares & configurations here
-const config = require("./config")
-config(app)
+// Config (morgan, cors, json, etc)
+const config = require("./config");
+config(app);
 
-app.use(express.json());
+// ROUTES (después de config)
+const userRoutes = require("./routes/user.routes");
+app.use("/api", userRoutes);
 
+// Health check
 app.get("/", (req, res) => {
-  res.json("API working 🚀");
+  res.status(200).send("OK");
 });
 
-app.listen(5005, () => {
-  console.log("Server running");
+// 404
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
 });
 
-// all routes here...
-//const indexRouter = require("./routes/index.routes")
-//app.use("/api", indexRouter)
+// Error handling
+const errorHandling = require("./errors");
+errorHandling(app);
 
-// Error Handling
-const errorHandling = require("./errors")
-errorHandling(app)
-
-// server listen & PORT
-const PORT = process.env.PORT || 5005
-
+// Listen
+const PORT = process.env.PORT || 5005;
 app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
+  console.log(`Server listening on http://localhost:${PORT}`);
 });
