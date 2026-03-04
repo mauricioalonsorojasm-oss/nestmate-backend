@@ -10,10 +10,19 @@ require("./db")
 const config = require("./config")
 config(app)
 
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.json("API working 🚀");
+});
+
+app.listen(5005, () => {
+  console.log("Server running");
+});
 
 // all routes here...
-const indexRouter = require("./routes/index.routes")
-app.use("/api", indexRouter)
+//const indexRouter = require("./routes/index.routes")
+//app.use("/api", indexRouter)
 
 // Error Handling
 const errorHandling = require("./errors")
