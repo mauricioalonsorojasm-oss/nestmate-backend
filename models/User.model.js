@@ -12,7 +12,7 @@ const userSchema = new Schema({
 	pets: { type: Boolean },
 	description: { type: String },
 	photoUrl: { type: String },
-	favourites: [{ type: Schema.Types.ObjectId, ref: "Listing" }],
+	favorites: [{ type: Schema.Types.ObjectId, ref: "Listing" }],
 });
 
 const User = model("User", userSchema);

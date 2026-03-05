@@ -75,6 +75,7 @@ router.post("/login", async(req, res, next) => {
     
     // validate password
     const isPasswordCorrect = await bcrypt.compare(password, foundUser.password)
+    console.log(isPasswordCorrect)
     if (isPasswordCorrect === false) {
       res.status(400).json({ errorMessage: "Password not correct!" })
       return // now stop the route from continuing.

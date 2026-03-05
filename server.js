@@ -18,8 +18,6 @@ const userRoutes = require("./routes/user.routes");
 app.use("/api", userRoutes);
 
 
-
-
 // Health check
 app.get("/", (req, res) => {
 res.status(200).send("OK");
