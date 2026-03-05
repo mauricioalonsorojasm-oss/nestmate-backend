@@ -61,11 +61,12 @@ router.get("/users", async (req, res, next) => {
 
 // PRIVATE ROUTES - require token verification
 
-// GET /api/users/me - Devuelve el perfil del usuario autenticado
+// GET /api/users/:id - Devuelve el perfil del usuario autenticado
 router.get("/users/:id", verifyToken, async (req, res, next) => {
   try {
     const userId = req.payload._id;
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(userId)
+    .select("-password -email");
     res.json(user);
   } catch (error) {
     next(error);
@@ -73,26 +74,56 @@ router.get("/users/:id", verifyToken, async (req, res, next) => {
 });
 
 
+// GET /api/users/me - get my profile
+router.get("/users/me", verifyToken, async (req, res, next) => {
+  try {
+
+    const userId = req.payload._id // id of the logged-in user from the token
+
+    const user = await User.findById(userId)
+      .select("-password")
+
+    res.status(200).json(user)
+
+  } catch (error) {
+    next(error)
+  }
+});
+
+
+
+
 // PUT /api/users/:id - Actualiza un usuario por ID // dev test only
 
 router.put("/users/:id", verifyToken, async (req, res, next) => {
   try {
     const userId = req.payload._id;
-    const updated = await User.findByIdAndUpdate(userId, req.body);
-    console.log("BODY:", req.body);
-    res.status(200).json(updated);
+    const updated = await User.findByIdAndUpdate(userId, req.body)//solo se edita cada uno del usuario.
+    .select("-password -email");
+    delete req.body.password; // Evitar que se devuelva la contraseña en la respuesta
+    delete req.body.email; // Evitar que se devuelva el email en la respuesta
+   
+    res.status(200).json({ Message: "User updated successfully" });
   } catch (error) {
     next(error);
   }
 });
 
-// POST /api/users/:id/photoUrl - Upload user profile picture
-router.post("/users/:id/photoUrl", verifyToken, async (req, res, next) => {
+// POST /api/users/me/photoUrl
+router.post("/users/me/photoUrl", verifyToken, async (req, res, next) => {
   try {
-    const userId = req.payload._id;
+
+    const userId = req.payload._id; // logged-in user id
     const { photoUrl } = req.body;
-    const updated = await User.findByIdAndUpdate(userId, { photoUrl });
-    res.status(200).json(updated);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { photoUrl },
+      { new: true }
+    );
+
+    res.status(200).json({ Message: "Profile photo updated successfully", photoUrl: updatedUser.photoUrl });
+
   } catch (error) {
     next(error);
   }

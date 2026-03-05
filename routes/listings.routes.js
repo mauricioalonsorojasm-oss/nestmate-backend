@@ -26,7 +26,8 @@ router.post("/listings", verifyToken, async (req, res, next) => {
 router.get("/listings", async (req, res, next) => {
 
   try {
-    const listings = await Listing.find().populate("owner", "name email") 
+    const listings = await Listing.find()
+    .select("title description price city photoUrl") // only lisiting fields, not owner
     res.json(listings)
   } catch (error) {
     next(error)
@@ -36,7 +37,7 @@ router.get("/listings", async (req, res, next) => {
 // GET "/api/listings/:id" => Get a listing by id
 router.get("/listings/:id", async (req, res, next) => {
   try {
-    const listing = await Listing.findById(req.params.id).populate("owner", "name email");
+    const listing = await Listing.findById(req.params.id).populate("owner", "name");
     if (!listing) {
       return res.status(404).json({ errorMessage: "Listing not found" });
     }
@@ -46,12 +47,21 @@ router.get("/listings/:id", async (req, res, next) => {
   }
 });
 
-// PUT "/api/listings/:id" => Update listing
+// PUT "/api/listings/:id" => Update listing //Solamente el usuario puede editar.Y eliminar.
 router.put("/listings/:id", verifyToken, async (req, res, next) => {
   try {
-    const listing = await Listing.findByIdAndUpdate(req.params.id, req.body, { new: true }); // { new: true } returns the updated document
+    const userId = req.payload._id; // ID del usuario autenticado
+    delete req.body.owner; // Evitar que el cliente cambie el propietario del listing
+    delete req.body._id; // Evitar que el cliente cambie el ID del listing
+    delete req.body.city; // 
+    delete req.body.title; // Evitar que el cliente cambie la ciudad y el título del listing, ya que son campos obligatorios
+    const listing = await Listing.findOneAndUpdate(
+      { _id: req.params.id, owner: userId },
+      req.body,
+      { new: true }
+    );
     if (!listing) {
-      return res.status(404).json({ errorMessage: "Listing not found" });
+      return res.status(404).json({ errorMessage: "No authorized to edit this listing" });
     }
     res.json(listing);
   } catch (error) {
@@ -62,9 +72,12 @@ router.put("/listings/:id", verifyToken, async (req, res, next) => {
 // DELETE "/api/listings/:id" => Delete listing
 router.delete("/listings/:id", verifyToken, async (req, res, next) => {
   try {
-
-    await Listing.findByIdAndDelete(req.params.id);
-
+     const userId = req.payload._id;
+    const listing = await Listing.findByIdAndDelete({ _id: req.params.id, owner: userId });
+    if (!listing) {
+      return res.status(404).json({ errorMessage: "No authorized to delete this listing" });
+    }
+   
     res.sendStatus(204);
 
   } catch (error) {

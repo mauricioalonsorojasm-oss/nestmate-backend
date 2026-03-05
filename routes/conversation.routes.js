@@ -10,7 +10,7 @@ router.post("/conversations", verifyToken, async (req, res, next) => {
 
   try {
 
-    const { listingId, receiverId } = req.body // senderId is the user who is logged in and wants to start a conversation
+    const { listingId, receiverId } = req.body  // data sent in the body to create the conversation
     const senderId = req.payload._id
 
     // check if conversation already exists
@@ -36,7 +36,7 @@ router.post("/conversations", verifyToken, async (req, res, next) => {
 
 })
 // GET - inbox
-router.get("/conversations/:id", verifyToken, async (req, res, next) => {
+router.get("/conversations", verifyToken, async (req, res, next) => {
   try {
 
     const userId = req.payload._id;
@@ -44,10 +44,10 @@ router.get("/conversations/:id", verifyToken, async (req, res, next) => {
     const conversations = await Conversation.find({
       participants: userId
     })
-      .populate("participants")
-      .populate("listing");
+      .populate("participants", "name") // populate the participants' names
+      .populate("listing") // populate the listing title and price
 
-    res.status(200).json(conversations);
+    res.status(200).json({ Message: "Conversations retrieved successfully", conversations });
 
   } catch (error) {
     next(error);

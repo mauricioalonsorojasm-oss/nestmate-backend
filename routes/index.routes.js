@@ -17,4 +17,6 @@ router.use("/", userRoutes)*/
 const conversationRoutes = require("./conversation.routes")
 router.use("/", conversationRoutes)
 
+const messageRoutes = require("./messages.routes")
+router.use("/", messageRoutes)
 module.exports = router
