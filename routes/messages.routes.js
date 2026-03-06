@@ -10,7 +10,7 @@ const ConversationRoutes = require("./conversation.routes")
 
 //GET all messages of a conversation
 
-router.get("/conversations/:id/messages", verifyToken, async (req, res, next) => {
+router.get("/conversations/:id", verifyToken, async (req, res, next) => {
   try {
 
     const messages = await Message.find({ conversation: req.params.id }) // busca los mensjaes que tengan el id de la conversación 
@@ -26,7 +26,7 @@ router.get("/conversations/:id/messages", verifyToken, async (req, res, next) =>
 // POST - create message
 
 
-router.post("/conversations/:id/messages", verifyToken, async (req, res, next) => {
+router.post("/conversations/:id", verifyToken, async (req, res, next) => {
 
   try {
 

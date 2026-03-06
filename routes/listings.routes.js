@@ -6,7 +6,7 @@ const verifyToken = require("../middlewares/auth.middlewares")
 
 // POST "/api/listings" => Create a listing
 
-router.post("/listings", verifyToken, async (req, res, next) => {
+router.post("/", verifyToken, async (req, res, next) => {
 
   try {
     const createdListing = await Listing.create({
@@ -23,7 +23,7 @@ router.post("/listings", verifyToken, async (req, res, next) => {
 
 //GET "/api/listings" => Get all listings
 
-router.get("/listings", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
 
   try {
     const listings = await Listing.find()
@@ -35,7 +35,7 @@ router.get("/listings", async (req, res, next) => {
 })
 
 // GET "/api/listings/:id" => Get a listing by id
-router.get("/listings/:id", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const listing = await Listing.findById(req.params.id).populate("owner", "name");
     if (!listing) {
@@ -48,7 +48,7 @@ router.get("/listings/:id", async (req, res, next) => {
 });
 
 // PUT "/api/listings/:id" => Update listing //Solamente el usuario puede editar.Y eliminar.
-router.put("/listings/:id", verifyToken, async (req, res, next) => {
+router.put("/:id", verifyToken, async (req, res, next) => {
   try {
     const userId = req.payload._id; // ID del usuario autenticado
     delete req.body.owner; // Evitar que el cliente cambie el propietario del listing
@@ -70,7 +70,7 @@ router.put("/listings/:id", verifyToken, async (req, res, next) => {
 });
 
 // DELETE "/api/listings/:id" => Delete listing
-router.delete("/listings/:id", verifyToken, async (req, res, next) => {
+router.delete("/:id", verifyToken, async (req, res, next) => {
   try {
      const userId = req.payload._id;
     const listing = await Listing.findByIdAndDelete({ _id: req.params.id, owner: userId });

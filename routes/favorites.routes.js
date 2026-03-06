@@ -4,7 +4,7 @@ const User = require("../models/User.model")
 
 // GET "/api/favorites" => return all favorite listings
 
-router.get("/users/favorites", verifyToken, async (req, res, next) => {
+router.get("/", verifyToken, async (req, res, next) => {
   try {
 
     const userId = req.payload._id;
@@ -24,7 +24,7 @@ router.get("/users/favorites", verifyToken, async (req, res, next) => {
 });
 
 // PATCH /api/users/favorites/:listingId  -> add to favorites
-router.patch("/users/favorites/:listingId", verifyToken, async (req, res, next) => {
+router.patch("/:listingId", verifyToken, async (req, res, next) => {
   try {
     const userId = req.payload._id;
     const { listingId } = req.params;
@@ -45,7 +45,7 @@ router.patch("/users/favorites/:listingId", verifyToken, async (req, res, next) 
 
 // DELETE /api/users/favorites/:listingId  -> remove from favorites
 
-router.delete("/users/favorites/:listingId", verifyToken, async (req, res, next) => {
+router.delete("/:listingId", verifyToken, async (req, res, next) => {
   try {
     const userId = req.payload._id;
     const { listingId } = req.params;

@@ -6,7 +6,7 @@ const Listing = require("../models/Listing.model");
 
 // POST /api/conversations - Creat conversation
 
-router.post("/conversations", verifyToken, async (req, res, next) => {
+router.post("/", verifyToken, async (req, res, next) => {
 
   try {
 
@@ -36,7 +36,7 @@ router.post("/conversations", verifyToken, async (req, res, next) => {
 
 })
 // GET - inbox
-router.get("/conversations", verifyToken, async (req, res, next) => {
+router.get("/", verifyToken, async (req, res, next) => {
   try {
 
     const userId = req.payload._id;
