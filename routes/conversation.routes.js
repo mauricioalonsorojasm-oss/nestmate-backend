@@ -45,7 +45,7 @@ router.get("/conversations", verifyToken, async (req, res, next) => {
       participants: userId
     })
       .populate("participants", "name") // populate the participants' names
-      .populate("listing") // populate the listing title and price
+      .populate("listing", "title price city") // populate the listing title and price
 
     res.status(200).json({ Message: "Conversations retrieved successfully", conversations });
 

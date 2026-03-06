@@ -14,7 +14,7 @@ router.get("/conversations/:id/messages", verifyToken, async (req, res, next) =>
   try {
 
     const messages = await Message.find({ conversation: req.params.id }) // busca los mensjaes que tengan el id de la conversación 
-    .populate("sender").sort({ createdAt: 1 }) 
+    .populate("sender", "name photoUrl").sort({ createdAt: 1 }) 
     // en vez de mostrar el id del sender, muestra los datos del usuario que es el sender, y ordena los mensajes por fecha(ascendente)
     res.status(200).json(messages);
 
