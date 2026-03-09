@@ -61,14 +61,14 @@ router.get("/:id", verifyToken, async (req, res, next) => {
     }
 
     const isParticipant = conversation.participants.some(
-      (participantId) => participantId.toString() === userId.toString(),
+      (participant) => participant._id.toString() === userId.toString(),
     );
 
     if (!isParticipant) {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    res.status(200).json(messages);
+    res.status(200).json(conversation);
   } catch (error) {
     next(error);
   }
