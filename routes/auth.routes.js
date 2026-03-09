@@ -10,7 +10,7 @@ const verifyToken = require("../middlewares/auth.middlewares")
 
 // POST "/api/auth/signup" => Creating a user document => SIGNUP ROUTE
 router.post("/signup", async (req, res, next) => {
-  console.log(req.body)
+  //console.log(req.body)
 
   const {email, password, name} = req.body;
 
