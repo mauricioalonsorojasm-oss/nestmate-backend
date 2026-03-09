@@ -12,7 +12,7 @@ router.get("/", verifyToken, async (req, res, next) => {
 
     const user = await User.findById(userId)
     
-      //.populate("favorites")
+      .populate("favorites")
       .select("favorites");
       console.log("USER:", user);
 
