@@ -34,6 +34,20 @@ router.get("/", async (req, res, next) => {
   }
 })
 
+// GET "/api/listings/mine" => Get listings of logged-in user
+router.get("/mine", verifyToken, async (req, res, next) => {
+  try {
+    const userId = req.payload._id;
+
+    const myListings = await Listing.find({ owner: userId })
+      .select("title city price description photoUrl petsAllowed smokerAllowed");
+
+    res.status(200).json(myListings);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // GET "/api/listings/:id" => Get a listing by id
 router.get("/:id", async (req, res, next) => {
   try {
@@ -73,7 +87,7 @@ router.put("/:id", verifyToken, async (req, res, next) => {
 router.delete("/:id", verifyToken, async (req, res, next) => {
   try {
      const userId = req.payload._id;
-    const listing = await Listing.findByIdAndDelete({ _id: req.params.id, owner: userId });
+    const listing = await Listing.findOneAndDelete({ _id: req.params.id, owner: userId });
     if (!listing) {
       return res.status(404).json({ errorMessage: "No authorized to delete this listing" });
     }

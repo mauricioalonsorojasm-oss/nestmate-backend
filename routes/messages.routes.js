@@ -9,14 +9,16 @@ router.get("/conversations/:id", verifyToken, async (req, res, next) => {
   try {
     const userId = req.payload._id;
 
-    const conversation = await Conversation.findById(req.params.id);
+    const conversation = await Conversation.findById(req.params.id)
+      .populate("participants", "name photoUrl")
+      .populate("listing", "title photoUrl city price");
 
     if (!conversation) {
       return res.status(404).json({ message: "Conversation not found" });
     }
 
     const isParticipant = conversation.participants.some(
-      (participantId) => participantId.toString() === userId.toString()
+      (participant) => participant._id.toString() === userId.toString()
     );
 
     if (!isParticipant) {
@@ -27,7 +29,10 @@ router.get("/conversations/:id", verifyToken, async (req, res, next) => {
       .populate("sender", "name photoUrl")
       .sort({ createdAt: 1 });
 
-    res.status(200).json(messages);
+    res.status(200).json({
+      conversation,
+      messages,
+    });
   } catch (error) {
     next(error);
   }
