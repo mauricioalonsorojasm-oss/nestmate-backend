@@ -27,7 +27,7 @@ router.get("/", async (req, res, next) => {
 
   try {
     const listings = await Listing.find()
-    .select("title description price city photoUrl") // only lisiting fields, not owner
+    .select("title city price description photoUrl petsAllowed smokerAllowed") // only lisiting fields, not owner
     res.json(listings)
   } catch (error) {
     next(error)
