@@ -12,4 +12,3 @@ function errorHandling(app) {
 }
 
 module.exports = errorHandling
-

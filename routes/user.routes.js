@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const User = require("../models/User.model");
 const verifyToken = require("../middlewares/auth.middlewares")
+const fileUploader = require("../middlewares/cloudinary.config")
 
 
 
@@ -58,7 +59,7 @@ router.put("/users/:id", verifyToken, async (req, res, next) => {
 });
 
 // POST /api/users/me/photoUrl
-router.post("/users/me/photoUrl", verifyToken, async (req, res, next) => {
+/*router.post("/users/me/photoUrl", verifyToken, async (req, res, next) => {
   try {
 
     const userId = req.payload._id; // logged-in user id
@@ -75,8 +76,38 @@ router.post("/users/me/photoUrl", verifyToken, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+});*/
 
+router.post(
+  "/users/me/photo-upload",
+  verifyToken,
+  fileUploader.single("image"),
+  async (req, res, next) => {
+    try {
+      const userId = req.payload._id;
+      console.log("File uploaded:", req.file);
+      console.log("Request body:", req.body);
+
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { photoUrl: req.file.path },
+        { new: true }
+      );
+
+      res.status(200).json({
+        message: "Profile photo uploaded successfully",
+        photoUrl: updatedUser.photoUrl,
+        user: updatedUser,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 
 
