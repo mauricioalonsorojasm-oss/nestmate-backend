@@ -14,7 +14,7 @@ project.
 
 Production API: https://nestmate-server.vercel.app/api
 
-Frontend: https://nestmate-eta.vercel.app
+Frontend: https://nestmate-app.vercel.app
 
 ------------------------------------------------------------------------
 
