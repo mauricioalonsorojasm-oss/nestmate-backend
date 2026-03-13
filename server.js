@@ -4,11 +4,22 @@ const express = require("express");
 const app = express();
 
 // DB
-require("./db");
+const connectDb = require("./db");
+app.use(async (req, res, next) => {
+    console.log("attepting to connect to DB...");
+    await connectDb();
+    next();
+})
+
 
 // Config (morgan, cors, json, etc)
 const config = require("./config");
 config(app);
+
+// Health check
+app.get("/", (req, res) => {
+res.status(200).send("OK");
+});
 
 const indexRoutes = require("./routes/index.routes");
 app.use("/api", indexRoutes);
@@ -18,10 +29,6 @@ const userRoutes = require("./routes/user.routes");
 app.use("/api", userRoutes);
 
 
-// Health check
-app.get("/", (req, res) => {
-res.status(200).send("OK");
-});
 
 // 404
 app.use((req, res) => {
